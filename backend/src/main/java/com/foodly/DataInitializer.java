@@ -24,18 +24,25 @@ import java.util.Arrays;
 @Component
 public class DataInitializer implements CommandLineRunner {
 
-    @Autowired private UserRepository userRepository;
-    @Autowired private RestaurantRepository restaurantRepository;
-    @Autowired private CustomerRepository customerRepository;
-    @Autowired private FoodItemRepository foodItemRepository;
-    @Autowired private DeliveryPartnerRepository deliveryPartnerRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+    @Autowired
+    private FoodItemRepository foodItemRepository;
+    @Autowired
+    private DeliveryPartnerRepository deliveryPartnerRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
         // 1. Create ADMIN
         if (userRepository.findByUsername("admin").isEmpty()) {
-            User admin = new User("admin", passwordEncoder.encode("admin123"), Role.ADMIN, "System", "Admin", "admin@foodly.com", "9999999999");
+            User admin = new User("admin", passwordEncoder.encode("admin123"), Role.ADMIN, "System", "Admin",
+                    "admin@foodly.com", "9999999999");
             userRepository.save(admin);
             System.out.println("Admin created: admin/admin123");
         }
@@ -67,7 +74,7 @@ public class DataInitializer implements CommandLineRunner {
             foodItemRepository.save(new FoodItem(r2, "Fries", 3.99));
             foodItemRepository.save(new FoodItem(r3, "California Roll", 11.50));
             foodItemRepository.save(new FoodItem(r3, "Miso Soup", 4.50));
-            
+
             System.out.println("Sample restaurants and unique logins created.");
         }
 
@@ -94,7 +101,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private User createOrGetUser(String username, String password, Role role, String first, String last) {
         return userRepository.findByUsername(username).orElseGet(() -> {
-            User user = new User(username, passwordEncoder.encode(password), role, first, last, username + "@foodly.com", "0000000000");
+            User user = new User(username, passwordEncoder.encode(password), role, first, last,
+                    username + "@foodly.com", "0000000000");
             return userRepository.save(user);
         });
     }

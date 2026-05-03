@@ -15,7 +15,7 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    @Value("${app.jwt.secret:defaultSecretKeyForHospitalManagementSystem2026}")
+    @Value("${JWT_SECRET:defaultSecretKeyForHospitalManagementSystem2026}")
     private String jwtSecret;
 
     @Value("${app.jwt.expiration:86400000}") // 24 hours
