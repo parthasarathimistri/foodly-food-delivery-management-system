@@ -1,13 +1,23 @@
-# Use Maven to build the Spring Boot jar
-FROM maven:3.9.9-eclipse-temurin-17 as build
-WORKDIR /workspace
+# Build stage
+FROM maven:3.8.4-openjdk-17-slim AS build
+WORKDIR /app
+
+# Copy pom.xml and source code
 COPY pom.xml .
 COPY src ./src
+
+# Build the application
 RUN mvn clean package -DskipTests
 
-# Run the Spring Boot application
-FROM eclipse-temurin:17-jre
+# Run stage
+FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /workspace/target/*.jar app.jar
+
+# Copy the built jar from the build stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose the port Spring Boot runs on
 EXPOSE 8080
-CMD java -Dserver.port=${PORT:-8080} -jar /app/app.jar
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
