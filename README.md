@@ -1,77 +1,107 @@
 # 🍔 Foodly - Full Stack Food Delivery Platform
-### React + Spring Boot + PostgreSQL (Render)
-**DBMS Mini Project | Role-Based Access Control**
+
+Foodly is a comprehensive, production-ready food delivery management system featuring a modern React frontend and a robust Spring Boot backend integrated with PostgreSQL. It supports full role-based access control (RBAC) handling the end-to-end order lifecycle.
 
 ---
 
-## 📁 PROJECT OVERVIEW
-Foodly is a comprehensive 4-role food delivery management system designed to handle the end-to-end order lifecycle. It features a modern React frontend and a robust Spring Boot backend integrated with a cloud-hosted PostgreSQL database.
+## 🛠️ Tech Stack
 
-### 👥 User Roles
-1.  **Admin**: Manage restaurants, delivery partners, orders, and system-wide statistics.
-2.  **Restaurant Owner**: Manage menus, accept/reject incoming orders, and track business performance.
-3.  **Delivery Partner**: Accept deliveries, update real-time tracking, and track earnings.
-4.  **Customer**: Browse restaurants, place orders, apply coupons, and track delivery status.
+*   **Frontend**: React.js (v18), Lucide-React (Icons), Recharts (Analytics Data), React Router DOM
+*   **Backend**: Java 17, Spring Boot 3, Spring Security 6 (JWT Authentication), Spring Data JPA
+*   **Database**: PostgreSQL (Hosted on Render)
+*   **Deployment**: Vercel (Frontend), Render (Backend & DB)
 
 ---
 
-## 🏗️ PROJECT STRUCTURE
+## 👥 User Roles & Features
 
-```
+1.  **👑 Admin**: Manage restaurants, delivery partners, view all orders, assign partners, and track global revenue.
+2.  **🍽️ Restaurant Owner**: Manage menus (add/remove items), accept/reject incoming orders, and track restaurant-specific revenue and stats.
+3.  **🚚 Delivery Partner**: Browse available local orders, accept deliveries, update live status (picked up, delivered), and track lifetime earnings.
+4.  **🛒 Customer**: Browse restaurants, place orders, track order status in real-time.
+
+*Note: All dashboards feature 10-second auto-polling, meaning new orders and status updates appear instantly without needing a manual page refresh.*
+
+---
+
+## 📁 Project Structure
+
+```text
 foodly-platform/
 │
-├── backend/                        ← Spring Boot (Java 17)
-│   ├── pom.xml                     ← Maven dependencies
+├── backend/                                   ← Spring Boot API
+│   ├── pom.xml                                ← Maven dependencies
+│   ├── Dockerfile                             ← Production container build instructions
 │   └── src/main/java/com/foodly/
-│       ├── FoodDeliveryApplication.java    ← Main entry point
-│       ├── model/                  ← Entity classes
-│       ├── repository/             ← Spring Data JPA (PostgreSQL)
-│       ├── service/                ← Business logic
-│       └── controller/             ← REST API endpoints
+│       ├── FoodDeliveryApplication.java       ← Main Entry Point
+│       ├── DataInitializer.java               ← Auto-seeds default users & menus on startup
+│       ├── WebConfig.java                     ← Global CORS Configuration
+│       ├── config/                            ← General configs
+│       ├── security/                          ← JWT Auth, Filters, and Spring Security setup
+│       ├── model/                             ← JPA Database Entities (Users, Orders, etc.)
+│       ├── repository/                        ← Spring Data JPA Interfaces
+│       ├── service/                           ← Business logic and RBAC checks
+│       └── controller/                        ← REST API Endpoints (/api/*)
 │
-├── frontend/                       ← React (JavaScript)
-│   ├── src/
-│   │   ├── pages/                  ← Role-specific dashboards
-│   │   ├── components/             ← Reusable UI elements
-│   │   ├── services/               ← API integration (Axios)
-│   │   └── contexts/               ← Auth & State Management
-│   └── vercel.json                 ← Deployment config
+└── frontend/                                  ← React SPA
+    ├── package.json                           ← Node dependencies
+    ├── vercel.json                            ← Vercel deployment configuration
+    ├── public/
+    └── src/
+        ├── App.js & App.css                   ← Main router and global styling system
+        ├── components/                        ← Reusable UI (Sidebar, TrackingMap, etc.)
+        ├── contexts/                          ← AuthContext.jsx (Global user state)
+        ├── services/                          ← api.js (Axios instances and interceptors)
+        └── pages/                             ← Role-specific Views:
+            ├── AdminDashboard.jsx             ← Admin stats and overrides
+            ├── RestaurantDashboard.jsx        ← Menu and order management
+            ├── DeliveryDashboard.jsx          ← Delivery tracking and availability
+            ├── CustomerHome.jsx               ← Restaurant browsing
+            ├── OrdersPage.jsx                 ← Customer order tracking
+            └── LoginPage.jsx & Register.jsx   ← Authentication UI
 ```
 
 ---
 
-## 🚀 GETTING STARTED
+## 🚀 Getting Started (Local Development)
 
-### 1. Prerequisites
+### Prerequisites
 *   **Java 17+** & Maven
 *   **Node.js 18+**
 *   **PostgreSQL** (Local or Remote)
 
-### 2. Backend Setup
+### 1. Backend Setup
 1.  Navigate to `backend/`.
-2.  Configure `src/main/resources/application.properties` with your PostgreSQL credentials.
-3.  Run the application:
+2.  Open `src/main/resources/application.properties`.
+3.  Configure your PostgreSQL credentials. By default, it is configured to connect to a remote Render database. 
+4.  Set up your JWT Secret in your environment or allow it to use the default.
+5.  Run the application:
     ```bash
     mvn spring-boot:run
     ```
-4.  The server starts at `http://localhost:8080`.
+6.  The backend server will start at `http://localhost:8080`.
 
-### 3. Frontend Setup
+### 2. Frontend Setup
 1.  Navigate to `frontend/`.
 2.  Install dependencies:
     ```bash
     npm install
     ```
-3.  Run the dev server:
+3.  Create a `.env` file (optional) to point to your backend:
+    ```env
+    REACT_APP_API_URL=http://localhost:8080
+    ```
+4.  Run the dev server:
     ```bash
     npm start
     ```
-4.  The application will be available at `http://localhost:3000`.
+5.  The application will be available at `http://localhost:3000`.
 
 ---
 
-## 🔒 AUTHENTICATION & LOGIN
-The system uses JWT-based authentication. Use the following default credentials for testing:
+## 🔒 Default Logins (Test Data)
+
+When the backend runs for the first time, `DataInitializer.java` automatically creates these accounts for you to test the platform.
 
 | Role | Username | Password |
 | :--- | :--- | :--- |
@@ -82,12 +112,15 @@ The system uses JWT-based authentication. Use the following default credentials 
 
 ---
 
-## 🛠️ KEY FEATURES
-*   **Role-Based Dashboards**: Custom UI for Admin, Restaurants, and Delivery Partners.
-*   **Order Lifecycle**: Placed -> Accepted -> Assigned -> Picked Up -> Delivered.
-*   **Cloud Integration**: Fully configured for Render PostgreSQL.
-*   **Responsive UI**: Premium design with smooth animations and dark-mode aesthetics.
-*   **Security**: Restricted status updates and data isolation per restaurant/partner.
+## ☁️ Deployment Guides
 
----
-**Developed by:** Partha Sarathi Mistri | Aditya Srivastava | SRMIST
+### Backend (Render)
+1. Create a **Web Service** on Render pointing to your `backend/` directory.
+2. Ensure the build command is `mvn clean install -DskipTests` (or use the provided Dockerfile).
+3. Set the Environment Variables: `JWT_SECRET`, `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`.
+
+### Frontend (Vercel)
+1. Import your repository into Vercel.
+2. Set the Root Directory to `frontend`.
+3. Add the Environment Variable `REACT_APP_API_URL` pointing to your live Render backend URL.
+4. Deploy!
