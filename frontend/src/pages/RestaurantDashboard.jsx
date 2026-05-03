@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { orderAPI, foodItemAPI, restaurantAPI } from '../services/api';
-import { Utensils, CheckCircle, XCircle } from 'lucide-react';
+import { Utensils, CheckCircle, XCircle, DollarSign, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const STATUS_COLORS = {
@@ -92,6 +92,31 @@ export default function RestaurantDashboard({ activeTab: initialTab }) {
         <div>
             <h1 className="page-title"><Utensils /> {restaurant?.name || 'Restaurant Dashboard'}</h1>
             {error && <div className="alert alert-error">{error}</div>}
+
+            {/* Restaurant Stats */}
+            <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '24px' }}>
+                <div className="stat-card">
+                    <div className="stat-icon" style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}><Package size={24} /></div>
+                    <div className="stat-content">
+                        <span className="stat-value">{orders.length}</span>
+                        <span className="stat-label">Total Orders</span>
+                    </div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}><CheckCircle size={24} /></div>
+                    <div className="stat-content">
+                        <span className="stat-value">{orders.filter(o => o.status === 'DELIVERED').length}</span>
+                        <span className="stat-label">Delivered</span>
+                    </div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}><DollarSign size={24} /></div>
+                    <div className="stat-content">
+                        <span className="stat-value">${(orders.filter(o => o.status === 'DELIVERED').reduce((sum, o) => sum + (o.totalAmount || 25.50), 0)).toFixed(2)}</span>
+                        <span className="stat-label">Revenue</span>
+                    </div>
+                </div>
+            </div>
 
             {/* Local Tab Switcher (Optional since Sidebar handles it now) */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>

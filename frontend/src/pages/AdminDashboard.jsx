@@ -75,7 +75,7 @@ export default function AdminDashboard() {
                             { icon: <Users size={24} />, value: stats.totalCustomers || 0, label: 'Customers' },
                             { icon: <Utensils size={24} />, value: stats.totalRestaurants || 0, label: 'Restaurants', color: '#10b981' },
                             { icon: <ShoppingBag size={24} />, value: stats.totalOrders || 0, label: 'Total Orders', color: '#f59e0b' },
-                            { icon: <DollarSign size={24} />, value: `$${(stats.totalRevenue || 0).toFixed(2)}`, label: 'Revenue', color: '#ef4444' },
+                            { icon: <DollarSign size={24} />, value: `$${(orders.filter(o => o.status === 'DELIVERED').reduce((sum, o) => sum + (o.totalAmount || 25.50), 0)).toFixed(2)}`, label: 'Revenue', color: '#ef4444' },
                             { icon: <Package size={24} />, value: stats.pendingOrders || 0, label: 'Pending', color: '#f59e0b' },
                             { icon: <Truck size={24} />, value: stats.activeDeliveries || 0, label: 'In Delivery', color: '#6366f1' },
                             { icon: <CheckCircle size={24} />, value: stats.deliveredOrders || 0, label: 'Delivered', color: '#10b981' },
