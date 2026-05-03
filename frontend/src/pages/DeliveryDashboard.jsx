@@ -34,7 +34,17 @@ export default function DeliveryDashboard({ activeTab: initialTab }) {
     }, [initialTab]);
 
     useEffect(() => {
-        if (user?.id) loadPartnerData();
+        if (user?.id) {
+            loadPartnerData();
+            const interval = setInterval(() => {
+                loadPartnerData();
+            }, 10000); // Poll every 10 seconds
+            
+            return () => { 
+                clearInterval(interval);
+                if (simulationRef.current) clearInterval(simulationRef.current); 
+            };
+        }
         return () => { if (simulationRef.current) clearInterval(simulationRef.current); };
     }, [user]);
 

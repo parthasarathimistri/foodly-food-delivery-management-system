@@ -18,7 +18,14 @@ export default function OrdersPage() {
 
     const isAdmin = hasRole('ADMIN');
 
-    useEffect(() => { loadData(); }, []);
+    useEffect(() => { 
+        loadData(); 
+        const interval = setInterval(() => {
+            loadData();
+        }, 10000); // Poll every 10 seconds
+        return () => clearInterval(interval);
+    }, []);
+
 
     const loadData = async () => {
         try {

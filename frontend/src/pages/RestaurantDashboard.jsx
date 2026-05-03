@@ -30,6 +30,12 @@ export default function RestaurantDashboard({ activeTab: initialTab }) {
         if (restaurant) { 
             loadOrders(); 
             loadMenu(); 
+            
+            const interval = setInterval(() => {
+                loadOrders();
+            }, 10000); // Poll every 10 seconds
+            
+            return () => clearInterval(interval);
         } 
     }, [restaurant]);
 
